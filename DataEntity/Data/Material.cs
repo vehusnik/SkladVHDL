@@ -22,7 +22,17 @@ namespace DataEntity.Data
 
         [Required, StringLength(60)]
         public string Nazev { get; set; } = string.Empty;
-    }
-    
-}
+        [Required, StringLength(30)]
+        public int MnozPoj { get; set; }
+        [Required, StringLength(30)]
+        public int MnoDoPal { get; set; }
 
+        public DateTime DatumPridani { get; set; } = DateTime.Now;
+        public string? Komentar { get; set; } = string.Empty;
+
+        public int MernaJednotkaID { get; set; }
+        [ForeignKey("MernaJednotkaID")]
+        public virtual required MernaJednotka MernaJednotka { get; set; }
+
+    }
+}
