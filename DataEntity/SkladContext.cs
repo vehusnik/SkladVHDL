@@ -8,6 +8,7 @@ namespace DataEntity
     public class SkladContext : DbContext
     {
         public DbSet<Material> Materialy => Set<Material>();
+        public DbSet<MernaJednotka> MerneJednotky => Set<MernaJednotka>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -16,7 +17,7 @@ namespace DataEntity
                 optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;" +
                     "Initial Catalog=SkladDbDemo1;" +
                     "Integrated Security=True;" +
-                    "TrustServerCertificate=True");
+                    "TrustServerCertificate=True").UseLazyLoadingProxies();
             }
         }
         
