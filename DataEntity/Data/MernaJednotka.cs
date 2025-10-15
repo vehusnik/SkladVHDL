@@ -13,7 +13,7 @@ namespace DataEntity.Data
 
     [Table("MerneJednotky")]
     [AddINotifyPropertyChangedInterface]
-    public class MernaJednotka
+    public class MerneJednotky
         {
           [Key]
           [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
