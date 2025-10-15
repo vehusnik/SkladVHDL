@@ -31,8 +31,37 @@ namespace DataEntity
                     "TrustServerCertificate=True").UseLazyLoadingProxies();
             }
         }
-        
-        
-     
+
+        public void Seed()
+        {
+            if (MerneJednotky.Any())
+
+            {
+                return; // DB has been seeded
+            }
+
+            var mJks = new MerneJednotky { Popis = "ks" };
+            var mJKg = new MerneJednotky { Popis = "Kg" };
+            var mjM3 = new MerneJednotky { Popis = "m3" };
+
+            var materialSroub = new Material
+            {
+                Nazev = "Šroub 6x40",
+                MnoDoPal = 5000,
+                MnozPoj = 100,
+                DatumPridani = System.DateTime.Now,
+                MernaJednotka = mJks
+            };
+            var materialHrebik = new Material
+             {
+                Nazev = "Hřebík 3x50",
+                MnoDoPal = 3000,
+                MnozPoj = 200,
+                DatumPridani = System.DateTime.Now,
+                MernaJednotka = mJks
+            };
+        }
+
+
     }
 }

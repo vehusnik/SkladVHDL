@@ -23,6 +23,7 @@ namespace DataEntity.Data
             public string Popis { get; set; } = string.Empty;
 
             public virtual ObservableCollection<Material> Materials { get; set; } = null!;
+
     }
 
 
