@@ -1,28 +1,29 @@
-﻿using System;
+﻿using DataEntity.Data.Base;
+using PropertyChanged;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using PropertyChanged;
-using System.Collections.ObjectModel;
 
 namespace DataEntity.Data
 {
 
-    [Table("MerneJednotky")]
     [AddINotifyPropertyChangedInterface]
-    public class MerneJednotky
-        {
-          [Key]
-          [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            public int MernaJednotkaID { get; set; }
+    [Table("MerneJednotky")]
+    public class MernaJednotka : BaseModel
+    {
+        [Key]
+        public int MernaJednotkaId { get; set; }
 
-            [Required, StringLength(50, ErrorMessage = "Popis maximálně na 50 znaků")]
-            public string Popis { get; set; } = string.Empty;
+        [StringLength(50)]
+        public string? Popis { get; set; }
 
-            public virtual ObservableCollection<Material> Materials { get; set; } = null!;
+        public virtual ObservableCollection<Material> Materialy { get; set; }
+            = new ObservableCollection<Material>();
 
     }
 

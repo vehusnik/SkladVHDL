@@ -5,63 +5,95 @@ using System.Linq;
 
 namespace DataEntity
 {
-    // Tato třída představuje "vstupní bránu" do databáze.
-    // Pomocí této třídy můžeš číst a zapisovat data do tabulek v databázi.
-    public class SkladContext : DbContext // DbContext je základní třída pro práci s databází v Entity Framework
+    public class SkladContext : DbContext
     {
-        // Umožňuje získat, přidat, upravit nebo smazat záznamy typu Material v databázi.
-        public DbSet<Material> Materialy => Set<Material>();
-        public DbSet<MerneJednotky> MerneJednotky => Set<MerneJednotky>();
+        public DbSet<Material> Materialy { get; set; } = null!;
+        public DbSet<MernaJednotka> MerneJednotky { get; set; } = null!;
+        public DbSet<Paleta> Palety { get; set; } = null!;
 
-        // Tato metoda říká, jak se má připojit k databázi.
-        // Pokud ještě není připojení nastaveno, použije zde uvedený connection string.
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // Kontrola, jestli už není připojení nastaveno někde jinde.
             if (!optionsBuilder.IsConfigured)
             {
-                // Nastaví připojení k databázi na tvém počítači (LocalDB).
-                // "SkladDbDemo1" je název databáze.
-                // Integrated Security=True znamená, že se použije přihlášení do Windows.
-                // TrustServerCertificate=True je kvůli bezpečnosti spojení.
-                // UseLazyLoadingProxies umožňuje automaticky načítat související data až když jsou potřeba.
-                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;" +
-                    "Initial Catalog=SkladDbDemo1;" +
-                    "Integrated Security=True;" +
-                    "TrustServerCertificate=True").UseLazyLoadingProxies();
+                optionsBuilder
+                    .UseSqlServer(
+                        // uprav na svůj connection string (původní LocalDB / prod)
+                        "Data Source=(localdb)\\MSSQLLocalDB;" +
+                        "Initial Catalog=Sklad2025;" +
+                        "Integrated Security=True;" +
+                        "TrustServerCertificate=True")
+                    .UseLazyLoadingProxies();
             }
         }
 
         public void Seed()
         {
+            // Kontrola, zda již v DB nejsou data, aby se zabránilo duplicitám.
             if (MerneJednotky.Any())
-
             {
-                return; // DB has been seeded
+                return; // Databáze již byla naplněna.
             }
 
-            var mJks = new MerneJednotky { Popis = "ks" };
-            var mJKg = new MerneJednotky { Popis = "Kg" };
-            var mjM3 = new MerneJednotky { Popis = "m3" };
+            // Vytvoření měrných jednotek
+            var mjKs = new MernaJednotka { Popis = "ks" };
+            var mjKg = new MernaJednotka { Popis = "kg" };
+            var mjM3 = new MernaJednotka { Popis = "m3" };
 
+            // Vytvoření materiálů s přímým odkazem na objekt měrné jednotky
             var materialSroub = new Material
             {
-                Nazev = "Šroub 6x40",
-                MnoDoPal = 5000,
-                MnozPoj = 100,
-                DatumPridani = System.DateTime.Now,
-                MernaJednotka = mJks
+                Nazev = "Šroub",
+                MnozPoj = 1000,
+                MnozDoPal = 2000,
+                Datum = DateTime.Now,
+                MernaJednotka = mjKs // Přímé přiřazení objektu
             };
+
             var materialHrebik = new Material
-             {
-                Nazev = "Hřebík 3x50",
-                MnoDoPal = 3000,
-                MnozPoj = 200,
-                DatumPridani = System.DateTime.Now,
-                MernaJednotka = mJks
+            {
+                Nazev = "Hřebík",
+                MnozPoj = 1500,
+                MnozDoPal = 1000,
+                Datum = DateTime.Now,
+                MernaJednotka = mjKs // Přímé přiřazení objektu
             };
+
+            // Vytvoření palet s přímým odkazem na objekt materiálu
+            var palety = new[]
+            {
+                new Paleta
+                {
+                    Stav = Enums.PaletaStav.Vyskladneno,
+                    Typ = Enums.PaletaTyp.Velka,
+                    Material = materialSroub, // Přímé přiřazení objektu
+                	AdresaUlozeni = "M10",
+                    Mnozstvi = 500
+                },
+                new Paleta
+                {
+                    Stav = Enums.PaletaStav.Vyskladneno,
+                    Typ = Enums.PaletaTyp.Velka,
+                    Material = materialSroub, // Přímé přiřazení objektu
+                	AdresaUlozeni = "M2",
+                    Mnozstvi = 750
+                },
+                new Paleta
+                {
+                    Stav = Enums.PaletaStav.Vyskladneno,
+                    Typ = Enums.PaletaTyp.Velka,
+                    Material = materialHrebik, // Přímé přiřazení objektu
+                	AdresaUlozeni = "M2/5",
+                    Mnozstvi = 1000
+                }
+            };
+
+            // Přidání všech nových objektů do kontextu
+            MerneJednotky.AddRange(mjKs, mjKg, mjM3);
+            Materialy.AddRange(materialSroub, materialHrebik);
+            Palety.AddRange(palety);
+
+            // Jediné finální uložení všech změn do databáze
+            SaveChanges();
         }
-
-
     }
 }

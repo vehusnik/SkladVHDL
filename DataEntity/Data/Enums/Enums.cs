@@ -5,27 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataEntity.Data.Enums
+namespace DataEntity
 {
-    public class Enums
+    public static class Enums
     {
         public enum PaletaTyp
         {
-            [Description("Malá")]
-            Mala = 0,
-            [Description("Velká")]
-            Velka = 1,
-            [Description("Dělená(pro tyčový materiál")]
-            Delena = 2
+            [Description("Malá")] Mala = 0,
+            [Description("Velká")] Velka = 1,
+            [Description("Euro")] Euro = 2
         }
+
         public enum PaletaStav
         {
-            [Description("Zaskladnění")]
-            Zaskladneni = 0,
-            [Description("Vyskladnění")]
-            Vyskladneni = 1,
-            [Description("V dopravě")]
-            VDoprave = 2
+            [Description("Zaskladněno")] Zaskladneno = 0,
+            [Description("Vyskladněno")] Vyskladneno = 1,
+            [Description("V dopravě")] Doprava = 2
         }
     }
 }
